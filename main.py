@@ -19,7 +19,7 @@ def get_grid_position(lat, lon, level):
 
 st.title("メッシュコード検索アプリ")
 
-st.markdown("### 緯度経度やランドマーク名からメッシュコードを算出します。")
+st.markdown("### 緯度経度やランドマーク名からメッシュコードと位置を算出します。")
 
 st.write("")
 st.write("")
@@ -28,7 +28,7 @@ st.write("")
 
 
 selected_item = st.selectbox('入力する項目を選択してください。',
-                                 ['緯度経度', 'ランドマーク名'])
+                                 ['緯度経度', 'ランドマーク名', 'メッシュコード'])
 
 st.write("")
 st.write("")
@@ -46,7 +46,7 @@ if selected_item == "緯度経度":
                                  [1,2,3,4,5])
     
     
-    #lat, lon = 35.7100069 , 139.8108103
+    
     meshcode = ju.to_meshcode(lat, lon, level)
     st.write(f"{level}次メッシュコード: {meshcode}")
     lat_c, lon_c = ju.to_meshpoint(meshcode, 0.5, 0.5)
@@ -84,7 +84,7 @@ if selected_item == "緯度経度":
 
     folium_static(m)
 
-else:
+elif selected_item == "ランドマーク名":
     input_password = st.text_input(label="パスワードを入力してください", value='', type="password")
 
     name = ""
@@ -145,5 +145,41 @@ else:
 
     folium_static(m)
 
+else:
 
+    input_meshcode = st.text_input(label="メッシュコードを入力してください", value=5339461132)
+    lat_c, lon_c = ju.to_meshpoint(input_meshcode, 0.5, 0.5)
 
+    level = st.selectbox("メッシュレベルを入力してください",
+                                 [1,2,3,4,5])
+    
+
+    meshcode = ju.to_meshcode(lat_c, lon_c, level)
+    st.write(f"{level}次メッシュコード: {meshcode}")
+
+    if level == 1:
+        m = folium.Map(location=[lat_c, lon_c], zoom_start=8)
+    
+    elif level == 2:
+        m = folium.Map(location=[lat_c, lon_c], zoom_start=11)
+    
+    elif level == 3:
+        m = folium.Map(location=[lat_c, lon_c], zoom_start=14)
+    
+    elif level == 4:
+        m = folium.Map(location=[lat_c, lon_c], zoom_start=15)
+    
+    elif level == 5:
+        m = folium.Map(location=[lat_c, lon_c], zoom_start=16)
+
+    sq = get_grid_position(lat_c, lon_c, level)
+
+    folium.Polygon(
+        locations=sq, # 多角形の頂点
+        color="red", # 線の色
+        weight=3, # 線の太さ
+        fill=True, # 塗りつぶす
+        fill_opacity=0.5 # 透明度（1=不透明）
+    ).add_to(m)
+
+    folium_static(m)
