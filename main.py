@@ -148,38 +148,40 @@ elif selected_item == "ランドマーク名":
 else:
 
     input_meshcode = st.text_input(label="メッシュコードを入力してください", value=5339461132)
-    lat_c, lon_c = ju.to_meshpoint(input_meshcode, 0.5, 0.5)
 
-    level = st.selectbox("メッシュレベルを入力してください",
-                                 [1,2,3,4,5])
-    
+    if input_meshcode != "":
+        lat_c, lon_c = ju.to_meshpoint(input_meshcode, 0.5, 0.5)
 
-    meshcode = ju.to_meshcode(lat_c, lon_c, level)
-    st.write(f"{level}次メッシュコード: {meshcode}")
+        level = st.selectbox("メッシュレベルを入力してください",
+                                     [1,2,3,4,5])
 
-    if level == 1:
-        m = folium.Map(location=[lat_c, lon_c], zoom_start=8)
-    
-    elif level == 2:
-        m = folium.Map(location=[lat_c, lon_c], zoom_start=11)
-    
-    elif level == 3:
-        m = folium.Map(location=[lat_c, lon_c], zoom_start=14)
-    
-    elif level == 4:
-        m = folium.Map(location=[lat_c, lon_c], zoom_start=15)
-    
-    elif level == 5:
-        m = folium.Map(location=[lat_c, lon_c], zoom_start=16)
 
-    sq = get_grid_position(lat_c, lon_c, level)
+        meshcode = ju.to_meshcode(lat_c, lon_c, level)
+        st.write(f"{level}次メッシュコード: {meshcode}")
 
-    folium.Polygon(
-        locations=sq, # 多角形の頂点
-        color="red", # 線の色
-        weight=3, # 線の太さ
-        fill=True, # 塗りつぶす
-        fill_opacity=0.5 # 透明度（1=不透明）
-    ).add_to(m)
+        if level == 1:
+            m = folium.Map(location=[lat_c, lon_c], zoom_start=8)
+
+        elif level == 2:
+            m = folium.Map(location=[lat_c, lon_c], zoom_start=11)
+
+        elif level == 3:
+            m = folium.Map(location=[lat_c, lon_c], zoom_start=14)
+
+        elif level == 4:
+            m = folium.Map(location=[lat_c, lon_c], zoom_start=15)
+
+        elif level == 5:
+            m = folium.Map(location=[lat_c, lon_c], zoom_start=16)
+
+        sq = get_grid_position(lat_c, lon_c, level)
+
+        folium.Polygon(
+            locations=sq, # 多角形の頂点
+            color="red", # 線の色
+            weight=3, # 線の太さ
+            fill=True, # 塗りつぶす
+            fill_opacity=0.5 # 透明度（1=不透明）
+        ).add_to(m)
 
     folium_static(m)
