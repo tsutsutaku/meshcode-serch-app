@@ -5,6 +5,7 @@ import jismesh.utils as ju
 import requests
 
 API_KEY = st.secrets["API_KEY"]
+PASSWORD = st.secrets["PASSWORD"]
 
 def get_grid_position(lat, lon, level):
     meshcode = ju.to_meshcode(lat, lon, level)
@@ -24,6 +25,7 @@ st.write("")
 st.write("")
 st.write("")
 st.write("")
+
 
 selected_item = st.selectbox('入力する項目を選択してください。',
                                  ['緯度経度', 'ランドマーク名'])
@@ -83,12 +85,17 @@ if selected_item == "緯度経度":
     folium_static(m)
 
 else:
-    name = st.text_input(label="ランドマーク名を入力してください", value='')
+    input_password = st.text_input(label="パスワードを入力してください", value='', type="password")
+
+    name = ""
+    
+    if input_password == PASSWORD:
+        name = st.text_input(label="ランドマーク名を入力してください", value='')
 
     m = folium.Map(location=[35.7100069 , 139.8108103], zoom_start=8)
 
     #folium_static(m)
-
+    
     if name != "":
         req = requests.get(f"https://maps.googleapis.com/maps/api/geocode/json?address={name}&key={API_KEY}")
         req_json = req.json()
