@@ -1,0 +1,4 @@
+folium==0.12.1
+streamlit==0.82.0
+streamlit-folium==0.4.0
+jismesh==2.1.0
